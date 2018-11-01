@@ -1,0 +1,122 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+ 
+    <body>
+            <input type="text"  id="text" />
+        <input type="button"  id="send" value="test"/>
+        <div id="chatLog"></div>
+
+        <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {  
+  
+  if(!("WebSocket" in window)){  
+  $('#chatLog, input, button, #examples').fadeOut("fast");  
+  $('<p>Oh no, you need a browser that supports WebSockets. How about <a href="http://www.google.com/chrome">Google Chrome</a>?</p>').appendTo('#container');  
+  }else{  
+      //The user has WebSockets  
+  
+      connect();  
+  
+      function connect(){  
+          var socket;  
+          var host = "ws://localhost:8888/ws";  
+  
+          try{  
+              var socket = new WebSocket(host);  
+  
+              message('<p class="event">Socket Status: '+socket.readyState);  
+  
+              socket.onopen = function(){  
+                 message('<p class="event">Socket Status: '+socket.readyState+' (open)');  
+              }  
+  
+              socket.onmessage = function(msg){  
+                 message('<p class="message">Received: '+msg.data);  
+              }  
+  
+              socket.onclose = function(){  
+                message('<p class="event">Socket Status: '+socket.readyState+' (Closed)');  
+              }           
+  
+          } catch(exception){  
+             message('<p>Error'+exception);  
+          }  
+  
+          function send(){  
+              var text = $('#text').val();  
+  
+              if(text==""){  
+                  message('<p class="warning">Please enter a message');  
+                  return ;  
+              }  
+              try{  
+                  socket.send(text);
+                  console.log(text);  
+                //   message('<p class="event">Sent: '+text)  
+  
+              } catch(exception){  
+                console.log(exception);  
+                //  message('<p class="warning">');  
+              }  
+              $('#text').val("");  
+          }  
+  
+          function message(msg){  
+            // $('#chatLog').append(msg+'</p>');  
+            console.log(msg);
+          }  
+  
+          $('#text').keypress(function(event) {  
+              if (event.keyCode == '13') {  
+                send();  
+              }  
+          });   
+          $('#send').click(function(){  
+            send();
+          });    
+  
+          $('#disconnect').click(function(){  
+             socket.close();  
+          });  
+  
+      }//End connect  
+  
+  }//End else  
+  
+});  
+    </script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</html>
